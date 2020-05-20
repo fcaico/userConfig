@@ -1,0 +1,31 @@
+# Aliases for devops use at pharos
+
+# kubernetes
+alias k='kubectl'
+
+# aliases
+alias cake='_cake() { local args="$@"; docker run -it --rm -w /build -v "$(pwd):/build" -v /var/run/docker.sock:/var/run/docker.sock -v /srv/cache:/cache -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_REGION -e NUGET_PACKAGES=/cache/nuget 854999447207.dkr.ecr.us-east-1.amazonaws.com/pharos/build/cake-docker bash -c "dotnet tool restore && dotnet cake --bootstrap --verbosity=diagnostic && dotnet cake --verbosity=diagnostic $args"; }; _cake'
+
+alias gemini='_gemini() { docker run -it --rm --entrypoint bash -v /var/run/docker.sock:/var/run/docker.sock -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_REGION "devops/gemini:${1:-latest}" --login; }; _gemini'
+alias mercury='_mercury() { docker run -it --rm --entrypoint bash -v /var/run/docker.sock:/var/run/docker.sock -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_REGION "devops/mercury:${1:-latest}" --login; }; _mercury'
+alias pulumi='_pulumi() { docker run -it --rm --entrypoint bash -v /var/run/docker.sock:/var/run/docker.sock -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_REGION -e PULUMI_ACCESS_TOKEN "devops/pulumi-docker:${1:-latest}" --login; }; _pulumi'
+
+_k8s()
+{
+        region="us-east-1"
+        if [[ ($1 == "Dev") || ($1 == "Alpha") || ($1 == "PocStag") || ($1 == "DevPulumi") || ($1 == "AlphaPulumi") ]];then
+                region="us-west-2"
+        fi
+        if [[ -z $2 ]];then
+                if [[ $1 == "DevPulumi" ]];then
+                        aws eks update-kubeconfig --name Dev-Eks-eksCluster-c963a40 --region $region
+                elif [[ $1 == "AlphaPulumi" ]];then
+                        aws eks update-kubeconfig --name Alpha-Eks-eksCluster-fb22312 --region $region
+                else
+                        aws eks update-kubeconfig --name $1-EksCluster --region $region
+                fi
+        else
+                aws eks update-kubeconfig --name $1-EksCluster --region $region --profile $2
+        fi
+}
+alias k8s='_k8s'

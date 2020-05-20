@@ -1,0 +1,3 @@
+alias vscode_list_ext='code --list-extensions'
+alias vscode_install_ext='code --install-extension '
+alias vscode_uninstall_ext='code --uninstall-extension '

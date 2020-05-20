@@ -1,0 +1,6 @@
+mydir=${(%):-%N}
+mydir=`dirname $mydir`
+
+export PATH=$PATH:${mydir}/../bin:${HOME}/.local/bin
+
+alias path='echo -e ${PATH//:/\\n}'

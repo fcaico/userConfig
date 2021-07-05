@@ -5,6 +5,16 @@ mydir=`dirname $mydir`
 mydir=${0:a:h}
 echo $mydir
 
+function setup_powerline_fonts {
+  destination="${1}"
+  echo "Installing powerline fonts"
+  cd "${destination}"
+  git clone https://github.com/powerline/fonts.git --depth=1
+  cd fonts
+  ./install.sh
+  cd .. && rm -rf fonts
+}
+
 function setup_ohmyzsh {
   destination="${1}"
   if [[ ! -d "${destination}/.oh-my-zsh" ]]; then
@@ -37,6 +47,9 @@ function setup_dotfiles ()
 
   done
 }
+
+echo "\nSetting up fonts\n"
+setup_powerline_fonts ${mydir}
 
 echo "\nSetting up oh-my-zsh\n"
 setup_ohmyzsh ${mydir}

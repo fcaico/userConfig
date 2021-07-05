@@ -1,5 +1,5 @@
 export userConfig_location=${HOME}/.userConfig
-export ohmyzsh_location=${HOME}/.oh-my-zsh
+export ohmyzsh_location=${userConfig_location}/.oh-my-zsh
 
 # Path to your oh-my-zsh installation.
 export ZSH=${ohmyzsh_location}
